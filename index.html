@@ -19,6 +19,7 @@
   --green-light: #E6F9F1;
   --amber: #F59E0B;
   --amber-light: #FEF3C7;
+  --red: #EF4444;
   --text: #0F172A;
   --muted: #64748B;
   --border: #E2E8F0;
@@ -74,23 +75,110 @@ body {
   0%   { transform:scale(1); opacity:0.7; }
   100% { transform:scale(2.2); opacity:0; }
 }
+@keyframes tickerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes joinSlideIn {
+  0%   { opacity:0; transform:translateX(-100%) scale(0.9); }
+  15%  { opacity:1; transform:translateX(0) scale(1); }
+  80%  { opacity:1; transform:translateX(0) scale(1); }
+  100% { opacity:0; transform:translateX(-100%) scale(0.9); }
+}
 
+/* ── TICKER ── */
+.ticker-wrap {
+  background: #0A0E1A;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  animation: fadeUp 0.5s 0.05s both;
+  position: relative;
+}
+.ticker-wrap::before,
+.ticker-wrap::after {
+  content:'';
+  position:absolute; top:0; bottom:0; width:28px; z-index:2;
+  pointer-events:none;
+}
+.ticker-wrap::before { left:0; background:linear-gradient(to right,#0A0E1A,transparent); }
+.ticker-wrap::after  { right:0; background:linear-gradient(to left,#0A0E1A,transparent); }
+
+.ticker-label {
+  position:absolute; left:10px; top:50%; transform:translateY(-50%);
+  font-size:9px; font-weight:800; color:#F59E0B;
+  letter-spacing:0.1em; text-transform:uppercase; z-index:3;
+  background:#0A0E1A; padding-right:6px;
+}
+
+.ticker-track {
+  display:flex;
+  gap:0;
+  width:max-content;
+  animation: tickerScroll 28s linear infinite;
+  padding: 9px 0 9px 90px;
+}
+
+.ticker-item {
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding: 0 18px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  white-space:nowrap;
+}
+
+.t-sym { font-size:11px; font-weight:800; color:#e2e8f0; letter-spacing:0.04em; }
+.t-price { font-size:11px; font-weight:700; }
+.t-change { font-size:10px; font-weight:600; }
+.t-up   { color:#22c55e; }
+.t-down { color:#ef4444; }
+.t-arr  { font-size:9px; }
+
+/* ── JOIN TOAST ── */
+.join-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 16px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 9px 16px 9px 9px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  max-width: 260px;
+  opacity: 0;
+  pointer-events: none;
+}
+.join-toast.show {
+  animation: joinSlideIn 3.5s ease forwards;
+}
+.join-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px;
+  flex-shrink:0;
+}
+.join-text { flex:1; }
+.join-text .j-name { font-size:12px; font-weight:700; color:var(--text); }
+.join-text .j-action { font-size:11px; color:var(--muted); }
+.join-tg {
+  width:20px; height:20px; flex-shrink:0;
+}
+
+/* ── REST OF PAGE ── */
 .page { max-width:480px; margin:0 auto; }
 
 .live-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  background: var(--green-light);
-  border: 1px solid rgba(13,185,106,0.25);
-  border-radius: 50px;
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #057a47;
-  margin-bottom: 22px;
-  animation: fadeUp 0.5s 0.1s both;
-  letter-spacing: 0.04em;
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--green-light); border: 1px solid rgba(13,185,106,0.25);
+  border-radius: 50px; padding: 6px 14px; font-size: 12px;
+  font-weight: 700; color: #057a47; margin-bottom: 14px;
+  animation: fadeUp 0.5s 0.1s both; letter-spacing: 0.04em;
 }
 .live-dot-wrap { position:relative; width:8px; height:8px; }
 .live-dot {
@@ -104,20 +192,15 @@ body {
 }
 
 .hero-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 28px 24px 24px;
-  text-align: center;
-  margin-bottom: 14px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 24px; padding: 28px 24px 24px;
+  text-align: center; margin-bottom: 14px;
   animation: fadeUp 0.55s 0.15s both;
   box-shadow: 0 4px 24px rgba(26,111,232,0.06), 0 1px 4px rgba(0,0,0,0.04);
 }
-
 .logo-ring {
   position:relative; width:80px; height:80px;
-  margin:0 auto 18px;
-  animation:scalePop 0.6s 0.3s both;
+  margin:0 auto 18px; animation:scalePop 0.6s 0.3s both;
 }
 .logo-ring img {
   width:80px; height:80px; border-radius:20px;
@@ -133,22 +216,11 @@ body {
   content:''; position:absolute; inset:-2px;
   border-radius:22px; background:var(--white); z-index:0;
 }
-
-.hero-card h1 {
-  font-size:26px; font-weight:800;
-  line-height:1.18; margin-bottom:10px; color:var(--text);
-}
+.hero-card h1 { font-size:26px; font-weight:800; line-height:1.18; margin-bottom:10px; color:var(--text); }
 .hero-card h1 .accent { color:var(--blue); }
+.hero-card .tagline { font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:22px; }
 
-.hero-card .tagline {
-  font-size:14px; color:var(--muted);
-  line-height:1.6; margin-bottom:22px;
-}
-
-.proof-strip {
-  display:grid; grid-template-columns:repeat(3,1fr);
-  gap:8px; margin-bottom:22px;
-}
+.proof-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:22px; }
 .p-item {
   background:var(--blue-light); border-radius:var(--radius-sm);
   padding:12px 8px; text-align:center;
@@ -179,15 +251,12 @@ body {
   display:flex; align-items:center; justify-content:center;
   gap:5px; margin-top:10px; font-size:12px; font-weight:600; color:var(--green);
 }
-
 .section-label {
   font-size:11px; font-weight:700; letter-spacing:0.1em;
   text-transform:uppercase; color:var(--muted); margin-bottom:10px;
   animation:fadeUp 0.5s 0.4s both;
 }
-
 .feat-list { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
-
 .feat-item {
   display:flex; align-items:center; gap:14px;
   background:var(--white); border:1px solid var(--border);
@@ -196,24 +265,12 @@ body {
   box-shadow:0 1px 4px rgba(0,0,0,0.03);
   transition:transform 0.18s,box-shadow 0.18s;
 }
-.feat-item:hover {
-  transform:translateX(4px);
-  box-shadow:0 4px 16px rgba(26,111,232,0.1);
-  border-color:var(--blue-mid);
-}
-.feat-icon {
-  width:40px; height:40px; border-radius:10px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:18px; flex-shrink:0;
-}
+.feat-item:hover { transform:translateX(4px); box-shadow:0 4px 16px rgba(26,111,232,0.1); border-color:var(--blue-mid); }
+.feat-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
 .feat-text { flex:1; }
 .feat-text strong { font-size:13.5px; font-weight:700; display:block; color:var(--text); }
 .feat-text span   { font-size:12px; color:var(--muted); line-height:1.4; }
-.feat-check {
-  width:20px; height:20px; border-radius:50%;
-  background:var(--green-light);
-  display:flex; align-items:center; justify-content:center; flex-shrink:0;
-}
+.feat-check { width:20px; height:20px; border-radius:50%; background:var(--green-light); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .feat-check svg { width:11px; height:11px; }
 
 .bars-card {
@@ -228,10 +285,7 @@ body {
 .bar-top .bar-lbl { color:var(--text); }
 .bar-top .bar-val { color:var(--muted); }
 .bar-track { height:7px; background:var(--bg); border-radius:50px; overflow:hidden; }
-.bar-fill {
-  height:100%; border-radius:50px;
-  animation:barGrow 1.2s cubic-bezier(0.22,1,0.36,1) calc(0.8s + var(--d)) both;
-}
+.bar-fill { height:100%; border-radius:50px; animation:barGrow 1.2s cubic-bezier(0.22,1,0.36,1) calc(0.8s + var(--d)) both; }
 
 .timer-card {
   background:var(--white); border:1px solid var(--border);
@@ -239,16 +293,9 @@ body {
   margin-bottom:14px; animation:fadeUp 0.5s 0.85s both;
   box-shadow:0 1px 4px rgba(0,0,0,0.03);
 }
-.timer-top {
-  display:flex; align-items:center; gap:6px;
-  font-size:12px; font-weight:700; color:#b45309; margin-bottom:12px;
-}
+.timer-top { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:#b45309; margin-bottom:12px; }
 .timer-boxes { display:flex; gap:8px; }
-.t-box {
-  flex:1; background:var(--amber-light);
-  border:1px solid rgba(245,158,11,0.2);
-  border-radius:var(--radius-sm); padding:10px 8px; text-align:center;
-}
+.t-box { flex:1; background:var(--amber-light); border:1px solid rgba(245,158,11,0.2); border-radius:var(--radius-sm); padding:10px 8px; text-align:center; }
 .t-num { font-size:26px; font-weight:800; color:var(--amber); line-height:1; }
 .t-lbl { font-size:10px; font-weight:700; color:#92400e; margin-top:3px; letter-spacing:0.07em; text-transform:uppercase; }
 
@@ -264,13 +311,28 @@ body {
 </head>
 <body>
 
+<!-- JOIN TOAST -->
+<div class="join-toast" id="joinToast">
+  <div class="join-avatar" id="joinAvatar">😊</div>
+  <div class="join-text">
+    <div class="j-name" id="joinName">Rahul S.</div>
+    <div class="j-action">just joined the channel ✅</div>
+  </div>
+  <svg class="join-tg" viewBox="0 0 24 24" fill="#1A6FE8"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+</div>
+
 <div class="page">
 
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <span class="ticker-label">LIVE</span>
+    <div class="ticker-track" id="tickerTrack">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
   <div class="live-badge">
-    <span class="live-dot-wrap">
-      <span class="live-ring"></span>
-      <span class="live-dot"></span>
-    </span>
+    <span class="live-dot-wrap"><span class="live-ring"></span><span class="live-dot"></span></span>
     CHANNEL LIVE &amp; ACTIVE
   </div>
 
@@ -282,18 +344,9 @@ body {
     <p class="tagline">Free daily analysis, price action setups &amp; risk management — for beginners to advanced traders.</p>
 
     <div class="proof-strip">
-      <div class="p-item" style="--d:0.05s">
-        <div class="p-num">10K+</div>
-        <div class="p-lbl">Members</div>
-      </div>
-      <div class="p-item" style="--d:0.12s">
-        <div class="p-num">Daily</div>
-        <div class="p-lbl">Signals</div>
-      </div>
-      <div class="p-item" style="--d:0.19s">
-        <div class="p-num">FREE</div>
-        <div class="p-lbl">Always</div>
-      </div>
+      <div class="p-item" style="--d:0.05s"><div class="p-num">10K+</div><div class="p-lbl">Members</div></div>
+      <div class="p-item" style="--d:0.12s"><div class="p-num">Daily</div><div class="p-lbl">Signals</div></div>
+      <div class="p-item" style="--d:0.19s"><div class="p-num">FREE</div><div class="p-lbl">Always</div></div>
     </div>
 
     <a href="https://t.me/+nw9nUIBdR980ZGI1" target="_blank" class="cta-btn" id="join-btn">
@@ -310,34 +363,22 @@ body {
   <div class="feat-list">
     <div class="feat-item" style="--d:0s">
       <div class="feat-icon" style="background:#EBF2FF;">📊</div>
-      <div class="feat-text">
-        <strong>Daily Market Analysis</strong>
-        <span>Forex pair breakdowns every morning before open</span>
-      </div>
+      <div class="feat-text"><strong>Daily Market Analysis</strong><span>Forex pair breakdowns every morning before open</span></div>
       <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="#0DB96A" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
     </div>
     <div class="feat-item" style="--d:0.07s">
       <div class="feat-icon" style="background:#F0FDF4;">🎯</div>
-      <div class="feat-text">
-        <strong>Price Action Setups</strong>
-        <span>Clear entry, SL &amp; TP with chart screenshots</span>
-      </div>
+      <div class="feat-text"><strong>Price Action Setups</strong><span>Clear entry, SL &amp; TP with chart screenshots</span></div>
       <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="#0DB96A" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
     </div>
     <div class="feat-item" style="--d:0.14s">
       <div class="feat-icon" style="background:#FEF3C7;">🛡️</div>
-      <div class="feat-text">
-        <strong>Risk Management Training</strong>
-        <span>Protect your capital before anything else</span>
-      </div>
+      <div class="feat-text"><strong>Risk Management Training</strong><span>Protect your capital before anything else</span></div>
       <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="#0DB96A" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
     </div>
     <div class="feat-item" style="--d:0.21s">
       <div class="feat-icon" style="background:#F5F3FF;">📚</div>
-      <div class="feat-text">
-        <strong>Beginner to Advanced</strong>
-        <span>Structured education for all experience levels</span>
-      </div>
+      <div class="feat-text"><strong>Beginner to Advanced</strong><span>Structured education for all experience levels</span></div>
       <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="#0DB96A" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
     </div>
   </div>
@@ -360,14 +401,8 @@ body {
   <div class="timer-card">
     <div class="timer-top">⚡ Limited open access — closes in</div>
     <div class="timer-boxes">
-      <div class="t-box">
-        <div class="t-num" id="t-min">09</div>
-        <div class="t-lbl">Minutes</div>
-      </div>
-      <div class="t-box">
-        <div class="t-num" id="t-sec">59</div>
-        <div class="t-lbl">Seconds</div>
-      </div>
+      <div class="t-box"><div class="t-num" id="t-min">09</div><div class="t-lbl">Minutes</div></div>
+      <div class="t-box"><div class="t-num" id="t-sec">59</div><div class="t-lbl">Seconds</div></div>
     </div>
   </div>
 
@@ -376,7 +411,7 @@ body {
     Join Thousands of Traders Now
   </a>
 
-    <div class="disclaimer">
+  <div class="disclaimer">
     <div class="ads-note">
       Ads managed by <strong>Metamind Agency</strong> &nbsp;•&nbsp;
       <a href="https://wa.link/y2913g" target="_blank">Contact for Ads</a>
@@ -393,21 +428,123 @@ body {
 </div>
 
 <script>
-  let total = 9 * 60 + 59;
-  const mEl = document.getElementById('t-min');
-  const sEl = document.getElementById('t-sec');
-  setInterval(() => {
-    if (total <= 0) { total = 9 * 60 + 59; return; }
-    total--;
-    mEl.textContent = String(Math.floor(total / 60)).padStart(2,'0');
-    sEl.textContent = String(total % 60).padStart(2,'0');
-  }, 1000);
+// ── TICKER DATA ──
+const pairs = [
+  { sym:'XAUUSD', base:3320.50, dp:2, label:'Gold' },
+  { sym:'XAGUSD', base:33.42,   dp:2, label:'Silver' },
+  { sym:'EURUSD', base:1.0842,  dp:4, label:'' },
+  { sym:'GBPUSD', base:1.2735,  dp:4, label:'' },
+  { sym:'USDJPY', base:157.84,  dp:2, label:'' },
+  { sym:'USDCHF', base:0.9012,  dp:4, label:'' },
+  { sym:'AUDUSD', base:0.6574,  dp:4, label:'' },
+  { sym:'USDCAD', base:1.3641,  dp:4, label:'' },
+  { sym:'NZDUSD', base:0.6021,  dp:4, label:'' },
+  { sym:'GBPJPY', base:200.94,  dp:2, label:'' },
+  { sym:'EURJPY', base:171.12,  dp:2, label:'' },
+  { sym:'XPTUSD', base:981.30,  dp:2, label:'Platinum' },
+  { sym:'USOIL',  base:78.45,   dp:2, label:'Oil' },
+];
 
-  document.querySelectorAll('.cta-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (typeof fbq !== 'undefined') fbq('track','Lead');
+// Random initial offsets
+const state = pairs.map(p => ({
+  ...p,
+  price: p.base + (Math.random()-0.5) * p.base * 0.002,
+  dir: Math.random() > 0.5 ? 1 : -1,
+}));
+
+function fmt(v, dp) { return v.toFixed(dp); }
+
+function buildTicker() {
+  const track = document.getElementById('tickerTrack');
+  // Render 2 copies for seamless loop
+  let html = '';
+  for (let copy = 0; copy < 2; copy++) {
+    state.forEach(s => {
+      const chg = ((s.price - s.base) / s.base * 100);
+      const up = s.dir >= 0;
+      const cls = up ? 't-up' : 't-down';
+      const arr = up ? '▲' : '▼';
+      const name = s.label ? `<span style="font-size:9px;color:#64748B;margin-left:2px">${s.label}</span>` : '';
+      html += `<div class="ticker-item">
+        <span class="t-sym">${s.sym}</span>${name}
+        <span class="t-price ${cls}">${fmt(s.price, s.dp)}</span>
+        <span class="t-change ${cls}">${arr} ${Math.abs(chg).toFixed(2)}%</span>
+      </div>`;
     });
+  }
+  track.innerHTML = html;
+}
+
+buildTicker();
+
+// Fluctuate prices every 3s
+setInterval(() => {
+  state.forEach(s => {
+    const move = s.base * (Math.random() * 0.0008);
+    s.price += (Math.random() > 0.48 ? 1 : -1) * move;
+    s.dir = s.price >= s.base ? 1 : -1;
   });
+  buildTicker();
+}, 3000);
+
+// ── COUNTDOWN ──
+let total = 9 * 60 + 59;
+const mEl = document.getElementById('t-min');
+const sEl = document.getElementById('t-sec');
+setInterval(() => {
+  if (total <= 0) { total = 9 * 60 + 59; return; }
+  total--;
+  mEl.textContent = String(Math.floor(total / 60)).padStart(2,'0');
+  sEl.textContent = String(total % 60).padStart(2,'0');
+}, 1000);
+
+// ── FAKE JOIN TOASTS ──
+const joiners = [
+  { name:'Rahul S.',    emoji:'👨', city:'Mumbai' },
+  { name:'Priya K.',    emoji:'👩', city:'Delhi' },
+  { name:'Arjun M.',   emoji:'🧑', city:'Pune' },
+  { name:'Sneha R.',   emoji:'👧', city:'Bangalore' },
+  { name:'Vikram T.',  emoji:'👦', city:'Hyderabad' },
+  { name:'Anjali P.',  emoji:'🙋', city:'Chennai' },
+  { name:'Rohit D.',   emoji:'🧔', city:'Kolkata' },
+  { name:'Meera J.',   emoji:'💁', city:'Ahmedabad' },
+  { name:'Suresh N.',  emoji:'👨', city:'Jaipur' },
+  { name:'Kavya L.',   emoji:'👩', city:'Surat' },
+  { name:'Amit V.',    emoji:'🧑', city:'Lucknow' },
+  { name:'Divya S.',   emoji:'👧', city:'Nagpur' },
+  { name:'Karan B.',   emoji:'👦', city:'Indore' },
+  { name:'Pooja M.',   emoji:'🙋', city:'Bhopal' },
+  { name:'Nikhil R.',  emoji:'🧔', city:'Patna' },
+  { name:'Riya C.',    emoji:'💁', city:'Vadodara' },
+];
+
+const toast     = document.getElementById('joinToast');
+const toastName = document.getElementById('joinName');
+const toastAv   = document.getElementById('joinAvatar');
+let   joinerIdx = 0;
+
+function showJoin() {
+  const j = joiners[joinerIdx % joiners.length];
+  joinerIdx++;
+  toastName.textContent = j.name;
+  toastAv.textContent   = j.emoji;
+  toast.classList.remove('show');
+  void toast.offsetWidth; // reflow
+  toast.classList.add('show');
+}
+
+// First toast after 4s, then every 6-10s
+setTimeout(() => {
+  showJoin();
+  setInterval(showJoin, 7000 + Math.random() * 3000);
+}, 4000);
+
+// FB pixel
+document.querySelectorAll('.cta-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (typeof fbq !== 'undefined') fbq('track','Lead');
+  });
+});
 </script>
 
 </body>
